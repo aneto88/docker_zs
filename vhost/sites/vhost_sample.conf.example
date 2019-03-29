@@ -1,0 +1,12 @@
+<VirtualHost *:80>
+    	ServerAdmin webmaster@localhost
+    	ServerName site.local
+    	DocumentRoot /var/www/...
+    <Directory /var/www/...>
+       		Options Indexes FollowSymLinks MultiViews
+        	AllowOverride All
+        	Order allow,deny
+        	Allow from all
+    </Directory>
+    #SetEnv APP_CONFIG_FILE /var/www/...
+</VirtualHost>

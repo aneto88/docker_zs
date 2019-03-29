@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#Generate password if none was set
+if [ -z $ZEND_ADMIN_PASSWORD ]; then
+	ZEND_ADMIN_PASSWORD=`cat /root/zend-password 2> /dev/null`
+if [ -z $ZEND_ADMIN_PASSWORD ]; then
+    export ZEND_ADMIN_PASSWORD=`date +%s | sha256sum | base64 | head -c 8`
+    echo $ZEND_ADMIN_PASSWORD > /root/zend-password
+fi
+fi
+
+#Grant permissions on Apache logs
+usermod -a -G adm zend
+
+#ZDOCK-15 - allow users to bring their own licenses
+/usr/local/bin/modify_license.sh
+
+/usr/local/zs-init/init.php
+
+#Define Default application
+/usr/local/zend/bin/zs-client.sh applicationDefine --name=default --baseUrl="http://<default-server>:80/" --zskey=$WEB_API_KEY_NAME --zssecret=$WEB_API_KEY_HASH > /dev/null 2>&1
+
+exec /usr/local/bin/nothing
+
+
